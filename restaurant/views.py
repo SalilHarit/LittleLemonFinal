@@ -2,7 +2,11 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from .forms import BookingForm
 from .models import Menu
-
+from .serializers import MenuSerializer, BookingSerializer, UserSerializer
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.viewsets import ModelViewSet
+from django.contrib.auth.models import User
+from rest_framework import permissions
 
 
 # Create your views here.
@@ -46,3 +50,21 @@ def display_menu_items(request, pk=None):
         menu_item = ''
 
     return render(request, 'menu_item.html', {'menu_item': menu_item})
+class MenuItemView(ListCreateAPIView):
+    queryset = Menu.objects.all()
+    serializer_class = MenuSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class SingleMenuItemView(RetrieveUpdateDestroyAPIView):
+    queryset = Menu.objects.all()
+    serializer_class = MenuSerializer
+
+class BookingViewSet(ModelViewSet):
+    queryset = Booking.objects.all()
+    serializer_class = BookingSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class UserViewSet(ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
